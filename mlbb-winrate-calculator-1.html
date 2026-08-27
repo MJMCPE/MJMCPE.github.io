@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winrate Calculator — Rank Climb</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E1120;
+    --card: #171B30;
+    --card-edge: #262C4A;
+    --gold: #E8B54D;
+    --teal: #37D2B4;
+    --rose: #E56885;
+    --text: #EDEFF7;
+    --muted: #8A90AE;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(232,181,77,0.08), transparent 60%),
+      radial-gradient(900px 500px at 110% 10%, rgba(55,210,180,0.08), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px 60px;
+  }
+
+  .wrap { width: 100%; max-width: 420px; }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.1;
+    margin: 0 0 22px;
+    letter-spacing: 0.01em;
+  }
+
+  h1 span { color: var(--teal); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-edge);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 16px;
+  }
+
+  .row { display: flex; gap: 12px; margin-bottom: 14px; }
+
+  .field { flex: 1; }
+
+  label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  input {
+    width: 100%;
+    background: #0F1326;
+    border: 1px solid var(--card-edge);
+    border-radius: 8px;
+    padding: 11px 12px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.15s ease;
+    -moz-appearance: textfield;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  input:focus { border-color: var(--teal); }
+
+  .field.rate label { color: var(--teal); }
+  .field.matches label { color: var(--gold); }
+  #target:focus { border-color: var(--gold); }
+
+  .field.target { margin-bottom: 4px; }
+  .field.target label { color: var(--gold); }
+
+  /* Derived stat chips */
+  .stat-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .stat-chip {
+    flex: 1;
+    background: #0F1326;
+    border: 1px solid var(--card-edge);
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+
+  .stat-chip .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .stat-chip .stat-value {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+  }
+
+  .stat-chip.wins .stat-value { color: var(--teal); }
+  .stat-chip.losses .stat-value { color: var(--rose); }
+
+  /* Gauge */
+  .gauge-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .gauge {
+    position: relative;
+    height: 10px;
+    background: #0F1326;
+    border-radius: 999px;
+    border: 1px solid var(--card-edge);
+    overflow: visible;
+    margin-bottom: 6px;
+  }
+
+  .gauge-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #2596A3, var(--teal));
+    width: 0%;
+    transition: width 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .gauge-target-marker {
+    position: absolute;
+    top: -4px;
+    width: 2px;
+    height: 18px;
+    background: var(--gold);
+    left: 0%;
+    transition: left 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .gauge-target-marker::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -3px;
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    border-radius: 1px;
+  }
+
+  .gauge-numbers {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 10px;
+  }
+
+  .gauge-numbers .current { color: var(--teal); }
+  .gauge-numbers .goal { color: var(--gold); }
+
+  .divider {
+    height: 1px;
+    background: var(--card-edge);
+    margin: 20px 0;
+  }
+
+  .result {
+    text-align: center;
+  }
+
+  .result-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .result-number {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .result-number .unit {
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-left: 4px;
+  }
+
+  .result-sub {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .result.reached .result-number { color: var(--teal); }
+
+  .result.invalid .result-number { color: var(--rose); font-size: 22px; }
+
+  .footnote {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+    opacity: 0.75;
+  }
+
+  .credit {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+    text-align: center;
+    margin-top: 22px;
+    opacity: 0.85;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">Rank Climb Utility</div>
+    <h1>Winrate <span>Calculator</span></h1>
+
+    <div class="card">
+      <div class="row">
+        <div class="field matches">
+          <label>Your matches</label>
+          <input type="number" id="matches" inputmode="numeric" min="0" placeholder="0" value="1183">
+        </div>
+        <div class="field rate">
+          <label>Your winrate %</label>
+          <input type="number" id="currentRateInput" inputmode="numeric" min="0" max="100" step="0.1" placeholder="0" value="53.2">
+        </div>
+      </div>
+      <div class="field target">
+        <label>Target winrate %</label>
+        <input type="number" id="target" inputmode="numeric" min="1" max="99" placeholder="60" value="60">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stat-row">
+        <div class="stat-chip wins">
+          <div class="stat-label">Wins</div>
+          <div class="stat-value" id="winsOut">0</div>
+        </div>
+        <div class="stat-chip losses">
+          <div class="stat-label">Loss</div>
+          <div class="stat-value" id="lossesOut">0</div>
+        </div>
+      </div>
+
+      <div class="gauge-label">
+        <span>0%</span>
+        <span>100%</span>
+      </div>
+      <div class="gauge">
+        <div class="gauge-fill" id="gaugeFill"></div>
+        <div class="gauge-target-marker" id="gaugeMarker"></div>
+      </div>
+      <div class="gauge-numbers">
+        <span class="current" id="currentLabel">53.2% current</span>
+        <span class="goal" id="goalLabel">60% goal</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="result" id="resultBlock">
+        <div class="result-eyebrow" id="resultEyebrow">Wins needed in a row</div>
+        <div class="result-number" id="resultNumber">0<span class="unit">matches</span></div>
+        <div class="result-sub" id="resultSub"></div>
+      </div>
+    </div>
+
+    <div class="footnote">Wins/Loss are estimated from matches × winrate. Formula: (target × total − wins) ÷ (1 − target) → rounded up</div>
+    <div class="credit">by MarkJesterMCPE</div>
+  </div>
+
+<script>
+  const matchesInput = document.getElementById('matches');
+  const currentRateInput = document.getElementById('currentRateInput');
+  const targetInput = document.getElementById('target');
+
+  const winsOut = document.getElementById('winsOut');
+  const lossesOut = document.getElementById('lossesOut');
+
+  const gaugeFill = document.getElementById('gaugeFill');
+  const gaugeMarker = document.getElementById('gaugeMarker');
+  const currentLabel = document.getElementById('currentLabel');
+  const goalLabel = document.getElementById('goalLabel');
+
+  const resultBlock = document.getElementById('resultBlock');
+  const resultEyebrow = document.getElementById('resultEyebrow');
+  const resultNumber = document.getElementById('resultNumber');
+  const resultSub = document.getElementById('resultSub');
+
+  function calculate() {
+    const m = parseFloat(matchesInput.value);
+    const r = parseFloat(currentRateInput.value);
+    const tPct = parseFloat(targetInput.value);
+
+    const total = isNaN(m) || m < 0 ? 0 : m;
+    const currentRate = isNaN(r) || r < 0 ? 0 : Math.min(r, 100);
+    const wins = Math.round((currentRate / 100) * total);
+    const losses = total - wins;
+
+    winsOut.textContent = total > 0 ? wins : '0';
+    lossesOut.textContent = total > 0 ? losses : '0';
+
+    currentLabel.textContent = `${currentRate.toFixed(1)}% current`;
+    gaugeFill.style.width = `${Math.min(currentRate, 100)}%`;
+
+    resultBlock.classList.remove('invalid', 'reached');
+
+    if (isNaN(tPct) || tPct <= 0 || tPct >= 100) {
+      goalLabel.textContent = '— goal';
+      gaugeMarker.style.left = '0%';
+      resultBlock.classList.add('invalid');
+      resultEyebrow.textContent = 'Target';
+      resultNumber.innerHTML = 'Enter a target between 1–99%';
+      resultSub.textContent = '';
+      return;
+    }
+
+    goalLabel.textContent = `${tPct}% goal`;
+    gaugeMarker.style.left = `${tPct}%`;
+
+    const t = tPct / 100;
+
+    if (total <= 0) {
+      resultEyebrow.textContent = 'Wins needed in a row';
+      resultNumber.innerHTML = 'Enter your matches';
+      resultSub.textContent = 'Add your total matches and winrate so there\'s a record to climb from.';
+      return;
+    }
+
+    if (currentRate >= tPct) {
+      resultBlock.classList.add('reached');
+      resultEyebrow.textContent = 'Status';
+      resultNumber.innerHTML = 'Goal reached';
+      resultSub.textContent = `Your current winrate is already ${currentRate.toFixed(1)}%, at or above your ${tPct}% target.`;
+      return;
+    }
+
+    // x = (t*total - currentRate%*total) / (1 - t), assuming every new match is a win
+    const rawX = (t * total - (currentRate / 100) * total) / (1 - t);
+    const x = Math.ceil(rawX - 1e-9);
+
+    resultEyebrow.textContent = 'Wins needed in a row';
+    resultNumber.innerHTML = `${x}<span class="unit">matches</span>`;
+    resultSub.textContent = `Win your next ${x} matches straight and your record becomes ${wins + x}-${losses}, right at ${tPct}%. Any loss in between and this count goes up.`;
+  }
+
+  [matchesInput, currentRateInput, targetInput].forEach(el => {
+    el.addEventListener('input', calculate);
+  });
+
+  calculate();
+</script>
+</body>
+</html>
