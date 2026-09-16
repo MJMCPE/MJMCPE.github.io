@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AquaDiscordSRV — Installation Guide</title>
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#0E9C8F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FAFAF8;
+    --surface: #FFFFFF;
+    --surface-2: #F2F4F3;
+    --text: #172023;
+    --text-dim: #5C6A6D;
+    --border: #E2E7E6;
+    --teal: #0E9C8F;
+    --teal-strong: #0B7E74;
+    --teal-tint: #E3F5F2;
+    --indigo: #5865F2;
+    --indigo-tint: #EEF0FE;
+    --danger: #C0362C;
+    --danger-tint: #FBEAE8;
+    --green: #16A34A;
+    --green-strong: #128A3E;
+    --code-bg: #12191A;
+    --code-text: #E6F1EF;
+    --shadow: 0 1px 2px rgba(20,30,32,0.04), 0 8px 24px rgba(20,30,32,0.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #0D1213;
+      --surface: #141B1C;
+      --surface-2: #1A2223;
+      --text: #E9F1F0;
+      --text-dim: #93A3A3;
+      --border: #263030;
+      --teal: #2FD1BE;
+      --teal-strong: #58E0D0;
+      --teal-tint: #14312E;
+      --indigo: #8791FA;
+      --indigo-tint: #1C1F3A;
+      --danger: #F0796E;
+      --danger-tint: #3A1A17;
+      --green: #22C55E;
+      --green-strong: #3FDC77;
+      --code-bg: #0A0F10;
+      --code-text: #DCEFEC;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #0D1213;
+    --surface: #141B1C;
+    --surface-2: #1A2223;
+    --text: #E9F1F0;
+    --text-dim: #93A3A3;
+    --border: #263030;
+    --teal: #2FD1BE;
+    --teal-strong: #58E0D0;
+    --teal-tint: #14312E;
+    --indigo: #8791FA;
+    --indigo-tint: #1C1F3A;
+    --danger: #F0796E;
+    --danger-tint: #3A1A17;
+    --green: #22C55E;
+    --green-strong: #3FDC77;
+    --code-bg: #0A0F10;
+    --code-text: #DCEFEC;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ background: var(--bg); }
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{ max-width: 760px; margin: 0 auto; padding: 0 20px 96px; }
+
+  /* ---- Header ---- */
+  header.hero{
+    padding: 56px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .mark{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(155deg, var(--teal) 0%, var(--indigo) 130%);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .mark svg{ width: 24px; height: 24px; }
+  h1{
+    font-size: clamp(1.7rem, 4.2vw, 2.35rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+    line-height: 1.15;
+  }
+  .lede{
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 56ch;
+    margin: 0 0 22px;
+  }
+  .lede code{ font-size: 0.92em; }
+
+  .factrow{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .fact{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-width: 128px;
+  }
+  .fact .k{ font-size: 0.72rem; color: var(--text-dim); }
+  .fact .v{ font-size: 0.92rem; font-weight: 600; }
+
+  /* ---- Download card ---- */
+  .dlcard{
+    margin-top: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+  .dlcard-main{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .dlcard-title-row{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .dlcard-version{
+    font-weight: 800;
+    font-size: 0.95rem;
+  }
+  .dlcard-tag{
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--teal-strong);
+    background: var(--teal-tint);
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+  .dlcard-filename{
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  .dlbtn{
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--green);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 6px 16px rgba(22,163,74,0.35);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 6px 16px color-mix(in srgb, var(--green) 35%, transparent);
+    transition: background 0.15s, transform 0.1s;
+    flex: none;
+  }
+  .dlbtn:hover{ background: var(--green-strong); }
+  .dlbtn:active{ transform: translateY(1px); }
+  .dlbtn svg{ width: 18px; height: 18px; flex: none; }
+  .dlcard-jump{
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--border);
+  }
+  .dlcard-jump:hover{ color: var(--teal-strong); border-color: var(--teal-strong); }
+
+  /* ---- Sticky nav ---- */
+  nav.toc{
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--bg);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+    margin-bottom: 36px;
+  }
+  nav.toc .inner{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav.toc .inner::-webkit-scrollbar{ display: none; }
+  nav.toc a{
+    flex: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 7px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  nav.toc a:hover{ background: var(--surface-2); color: var(--text); }
+  nav.toc a.active{ background: var(--teal-tint); color: var(--teal-strong); }
+
+  /* ---- Sections ---- */
+  section{ margin: 0 0 52px; scroll-margin-top: 64px; }
+  section > .num{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--teal-strong);
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+  }
+  h2{
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+  }
+  h3{
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 26px 0 10px;
+  }
+  p{ margin: 0 0 14px; }
+  .dim{ color: var(--text-dim); }
+
+  /* ---- Steps ---- */
+  ol.steps{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: step;
+    border-left: 2px solid var(--border);
+    margin-left: 15px;
+  }
+  ol.steps > li{
+    counter-increment: step;
+    position: relative;
+    padding: 0 0 28px 30px;
+  }
+  ol.steps > li:last-child{ padding-bottom: 2px; }
+  ol.steps > li::before{
+    content: counter(step);
+    position: absolute;
+    left: -17px;
+    top: 0;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--teal);
+    color: var(--teal-strong);
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  ol.steps h4{
+    margin: 3px 0 6px;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  ol.steps p{ margin: 0 0 8px; }
+
+  /* ---- Code ---- */
+  .codeblock{
+    position: relative;
+    background: var(--code-bg);
+    color: var(--code-text);
+    border-radius: 10px;
+    margin: 10px 0 16px;
+    overflow: hidden;
+  }
+  .codeblock pre{
+    margin: 0;
+    padding: 14px 44px 14px 16px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+  .codeblock .lang{
+    position: absolute;
+    top: 8px; left: 16px;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #7B928D;
+  }
+  .codeblock pre.has-lang{ padding-top: 26px; }
+  .copybtn{
+    position: absolute;
+    top: 8px; right: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #CFE7E2;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 5px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .copybtn:hover{ background: rgba(255,255,255,0.16); }
+
+  code:not(.codeblock code){
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-size: 0.86em;
+  }
+
+  /* ---- Callouts ---- */
+  .callout{
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin: 10px 0 16px;
+  }
+  .callout .icon{ flex: none; font-size: 1.1rem; line-height: 1.4; }
+  .callout p:last-child{ margin-bottom: 0; }
+  .callout.info{ background: var(--teal-tint); border-color: var(--teal); border-color: color-mix(in srgb, var(--teal) 35%, var(--border)); }
+  .callout.discord{ background: var(--indigo-tint); border-color: var(--indigo); border-color: color-mix(in srgb, var(--indigo) 35%, var(--border)); }
+  .callout.danger{ background: var(--danger-tint); border-color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, var(--border)); }
+  .callout strong{ display:block; margin-bottom: 2px; }
+
+  /* ---- Table ---- */
+  .tablewrap{ overflow-x: auto; margin: 10px 0 16px; }
+  table{ width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td{ text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); }
+  th{ color: var(--text-dim); font-weight: 700; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  td:first-child, th:first-child{ padding-left: 0; }
+
+  ul.plain{ margin: 0 0 14px; padding-left: 20px; }
+  ul.plain li{ margin-bottom: 6px; }
+
+  /* ---- Troubleshoot ---- */
+  .tshoot{ border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+  .tshoot summary{
+    cursor: pointer;
+    padding: 13px 16px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+  }
+  .tshoot summary::-webkit-details-marker{ display:none; }
+  .tshoot summary::before{ content: "+"; color: var(--teal-strong); font-weight: 800; width: 14px; }
+  .tshoot[open] summary::before{ content: "–"; }
+  .tshoot .body{ padding: 0 16px 16px 40px; color: var(--text-dim); font-size: 0.92rem; }
+  .tshoot .body p:last-child{ margin-bottom: 0; }
+
+  footer{
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 520px){
+    header.hero{ padding-top: 36px; }
+    .factrow{ gap: 8px; }
+    .fact{ min-width: 0; flex: 1 1 44%; }
+    .dlcard-main{ flex-direction: column; align-items: stretch; }
+    .dlbtn{ justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="toc" id="toc">
+  <div class="inner">
+    <a href="#prereqs">Prerequisites</a>
+    <a href="#install">Install</a>
+    <a href="#bot">Create the bot</a>
+    <a href="#invite">Invite &amp; permissions</a>
+    <a href="#configure">Configure</a>
+    <a href="#verify">Verify</a>
+    <a href="#extras">Optional features</a>
+    <a href="#troubleshooting">Troubleshooting</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="mark">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 12C4 7.58 7.58 4 12 4s8 3.58 8 8-3.58 8-8 8" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="12" cy="12" r="2.6" fill="white"/>
+        <path d="M12 4v3.4M4 12h3.4" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>Installing AquaDiscordSRV</h1>
+    <p class="lede">A step-by-step walkthrough for wiring up the Discord ⇄ Minecraft bridge on your Aquamarine server — from dropping in the plugin to getting your first message across.</p>
+    <div class="factrow">
+      <div class="fact"><span class="k">Server software</span><span class="v">Aquamarine (API 3.0.1)</span></div>
+      <div class="fact"><span class="k">Time needed</span><span class="v">~10 minutes</span></div>
+      <div class="fact"><span class="k">Requires</span><span class="v">A Discord account</span></div>
+    </div>
+
+    <div class="dlcard">
+      <div class="dlcard-main">
+        <div class="dlcard-info">
+          <div class="dlcard-title-row">
+            <span class="dlcard-version">AquaDiscordSRV v1.0.0</span>
+            <span class="dlcard-tag">Aquamarine · API 3.0.1</span>
+          </div>
+          <div class="dlcard-filename">AquaDiscordSRV-1.0.0.zip</div>
+        </div>
+        <a class="dlbtn" href="downloads/AquaDiscordSRV-1.0.0.zip" download>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3v12m0 0-4.5-4.5M12 15l4.5-4.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Download
+        </a>
+      </div>
+      <a class="dlcard-jump" href="#install">First time installing it? Jump to the setup steps ↓</a>
+    </div>
+  </header>
+
+  <section id="prereqs">
+    <span class="num">Before you start</span>
+    <h2>Prerequisites</h2>
+    <ul class="plain">
+      <li>An Aquamarine server you can restart and edit files on.</li>
+      <li>A Discord account, and permission to manage the server (guild) you want to bridge — you'll need <strong>Manage Server</strong> to invite a bot.</li>
+      <li>Shell or SFTP access to the server's <code>plugins/</code> folder.</li>
+    </ul>
+    <div class="callout info">
+      <span class="icon">💡</span>
+      <div><p>Everything below happens once. After setup, the bridge runs on its own — no need to touch Discord's developer portal again unless you reset the token.</p></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <span class="num">Step 1</span>
+    <h2>Install the plugin</h2>
+    <ol class="steps">
+      <li>
+        <h4>Extract the plugin into your plugins folder</h4>
+        <p>Unzip <code>AquaDiscordSRV.zip</code> so the <code>AquaDiscordSRV</code> folder itself (containing <code>plugin.yml</code>) sits directly inside your server's <code>plugins/</code> directory.</p>
+        <div class="codeblock">
+          <span class="lang">Directory layout</span>
+          <pre class="has-lang">plugins/
+└── AquaDiscordSRV/
+    ├── plugin.yml
+    ├── resources/config.yml
+    └── src/aquadiscordsrv/...</pre>
+        </div>
+      </li>
+      <li>
+        <h4>Restart the server once</h4>
+        <p>This generates <code>plugins/AquaDiscordSRV/config.yml</code> from the defaults. The bridge stays off until you finish the steps below — nothing will try to contact Discord yet.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="bot">
+    <span class="num">Step 2</span>
+    <h2>Create a Discord application and bot</h2>
+    <ol class="steps">
+      <li>
+        <h4>Create the application</h4>
+        <p>Go to the <a href="https://discord.com/developers/applications" target="_blank" rel="noopener">Discord Developer Portal</a>, click <strong>New Application</strong>, and give it any name — this is what shows up as the bot's username.</p>
+      </li>
+      <li>
+        <h4>Add a bot user</h4>
+        <p>Open the <strong>Bot</strong> tab in the left sidebar and click <strong>Add Bot</strong> (on newer apps this may already be created for you).</p>
+      </li>
+      <li>
+        <h4>Turn on the privileged intents</h4>
+        <p>Still on the Bot tab, scroll to <strong>Privileged Gateway Intents</strong> and enable:</p>
+        <ul class="plain">
+          <li><strong>Server Members Intent</strong></li>
+          <li><strong>Message Content Intent</strong> — without this, the bot receives messages with empty content and can't relay anything into the game</li>
+        </ul>
+      </li>
+      <li>
+        <h4>Copy the bot token</h4>
+        <p>Click <strong>Reset Token</strong>, then copy the value it shows you. Keep <strong>Public Bot</strong> switched off so random users can't add it to their own servers.</p>
+        <div class="callout danger">
+          <span class="icon">⚠️</span>
+          <div><strong>Treat this token like a password.</strong><p>Anyone who has it can control your bot. Don't paste it into chat, a public repo, or a screenshot.</p></div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="invite">
+    <span class="num">Step 3</span>
+    <h2>Invite the bot and set permissions</h2>
+    <ol class="steps">
+      <li>
+        <h4>Generate an invite link</h4>
+        <p>Open the <strong>OAuth2 → URL Generator</strong> tab. Under <em>Scopes</em>, check <code>bot</code>. Under <em>Bot Permissions</em>, check the boxes below, then open the generated URL and add the bot to your server.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Permission</th><th>Why AquaDiscordSRV needs it</th></tr></thead>
+            <tbody>
+              <tr><td>View Channel</td><td>Read the chat (and console) channels you configure</td></tr>
+              <tr><td>Send Messages</td><td>Post in-game chat, join/leave, and death messages</td></tr>
+              <tr><td>Read Message History</td><td>Poll for new messages since the last check</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="dim">That's the full list — this plugin doesn't touch roles, nicknames, or bans, so it doesn't ask for those permissions.</p>
+      </li>
+      <li>
+        <h4>Turn on Developer Mode in Discord</h4>
+        <p>In your own Discord client: <strong>User Settings → Advanced → Developer Mode</strong>. This adds a "Copy Channel ID" option when you right-click a channel.</p>
+      </li>
+      <li>
+        <h4>Copy your chat channel's ID</h4>
+        <p>Right-click the text channel you want mirrored in-game and choose <strong>Copy Channel ID</strong>. You'll paste this into <code>config.yml</code> next.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="configure">
+    <span class="num">Step 4</span>
+    <h2>Configure the plugin</h2>
+    <p>Open <code>plugins/AquaDiscordSRV/config.yml</code> and fill in three values:</p>
+    <div class="codeblock">
+      <span class="lang">config.yml</span>
+      <pre class="has-lang">Enabled: true
+
+BotToken: "paste-your-bot-token-here"
+
+Channels:
+  Chat: "1234567890123456789"   # the channel ID you copied</pre>
+      <button class="copybtn" data-copy="Enabled: true\n\nBotToken: &quot;paste-your-bot-token-here&quot;\n\nChannels:\n  Chat: &quot;1234567890123456789&quot;   # the channel ID you copied">Copy</button>
+    </div>
+    <p>Everything else in the file has a sensible default — colors, message wording, and the poll interval can all be tuned later. Run <code>/discordsrv reload</code> in-game or from console to apply changes without a full restart.</p>
+  </section>
+
+  <section id="verify">
+    <span class="num">Step 5</span>
+    <h2>Verify it's working</h2>
+    <ol class="steps">
+      <li>
+        <h4>Check the startup log</h4>
+        <p>After reloading, the console should print <code>Connected to Discord as bot user …</code> followed by <code>Bridge is up - relaying chat with Discord channel …</code>. Your Discord channel should also receive a server-started notice.</p>
+      </li>
+      <li>
+        <h4>Run the status command</h4>
+        <div class="codeblock">
+          <span class="lang">In-game or console</span>
+          <pre class="has-lang">/discordsrv status</pre>
+          <button class="copybtn" data-copy="/discordsrv status">Copy</button>
+        </div>
+      </li>
+      <li>
+        <h4>Send a test message both ways</h4>
+        <p>Type in the Discord channel — it should appear in-game within a few seconds (the default poll interval). Then chat in-game and confirm it shows up in Discord.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="extras">
+    <span class="num">Optional</span>
+    <h2>Extra features worth turning on</h2>
+
+    <h3>Chat as the player, with their skin as the avatar</h3>
+    <p>In the Discord channel's <strong>Integrations → Webhooks</strong> settings, create a webhook and copy its URL into <code>WebhookUrl</code> in <code>config.yml</code>. In-game chat will then post through the webhook using the player's name and rendered skin, instead of showing as the bot.</p>
+
+    <h3>Mirror the console to a Discord channel</h3>
+    <p>Set <code>Channels.Console</code> to a second channel ID. New lines written to <code>server.log</code> get batched and posted there on the same interval as chat.</p>
+
+    <div class="callout danger">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>Letting Discord run console commands</strong>
+        <p><code>ConsoleCommandExecution: true</code> makes every message posted in <code>Channels.Console</code> run as a server console command — full access, no confirmation. Only enable this if that channel is restricted to trusted staff, ideally in a category only they can see or post in.</p>
+      </div>
+    </div>
+
+    <h3>Customize the message wording</h3>
+    <p>The <code>Formats</code> block in <code>config.yml</code> controls chat, join, leave, death, and Discord-to-game templates, using placeholders like <code>{player}</code>, <code>{message}</code>, <code>{online}</code>, and <code>{max}</code>.</p>
+  </section>
+
+  <section id="troubleshooting">
+    <span class="num">If something's off</span>
+    <h2>Troubleshooting</h2>
+
+    <details class="tshoot">
+      <summary>The console logs a warning and the bridge won't turn on</summary>
+      <div class="body"><p>This means <code>BotToken</code> or <code>Channels.Chat</code> is still blank or left at the placeholder value. Double check both are filled in and the channel ID is the 17–19 digit number from "Copy Channel ID", not the channel's name.</p></div>
+    </details>
+
+    <details class="tshoot">
+      <summary>Messages don't relay from Discord into the game</summary>
+      <div class="body"><p>Almost always a missing <strong>Message Content Intent</strong> — without it, Discord sends every message with blank content. Re-check the Bot tab in the Developer Portal, then <code>/discordsrv reload</code>.</p></div>
+    </details>
+
+    <details class="tshoot">
+      <summary>In-game chat isn't appearing in Discord</summary>
+      <div class="body"><p>Confirm the bot actually has <strong>View Channel</strong> and <strong>Send Messages</strong> on that specific channel — permissions set at the server level can still be overridden per-channel.</p></div>
+    </details>
+
+    <details class="tshoot">
+      <summary>Discord replies feel slow</summary>
+      <div class="body"><p>Incoming messages are picked up by polling rather than a live connection, so there's a small built-in delay. Lower <code>PollIntervalSeconds</code> in <code>config.yml</code> if you want it snappier, but keep it at 3 seconds or higher to stay comfortably within Discord's rate limits.</p></div>
+    </details>
+
+    <details class="tshoot">
+      <summary>I want role sync, ban sync, or account linking</summary>
+      <div class="body"><p>These need a persistent connection to Discord's Gateway with a live member cache, which isn't something Aquamarine's plugin API currently exposes to plugins — so they're intentionally left out rather than half-implemented. The chat bridge, event relay, and console tools above cover what's realistically buildable on this API today.</p></div>
+    </details>
+  </section>
+
+  <footer>
+    AquaDiscordSRV · built for Aquamarine (API 3.0.1)
+  </footer>
+
+</div>
+
+<script>
+  // Copy-to-clipboard for code blocks
+  document.querySelectorAll('.copybtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var text = (btn.getAttribute('data-copy') || '').replace(/\\n/g, '\n');
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).catch(function(){});
+      }
+      var original = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(function(){ btn.textContent = original; }, 1400);
+    });
+  });
+
+  // Active-section highlighting in the sticky nav
+  (function(){
+    var sections = Array.prototype.slice.call(document.querySelectorAll('section[id]'));
+    var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+    function onScroll(){
+      var pos = window.scrollY + 90;
+      var current = sections[0];
+      sections.forEach(function(sec){
+        if(sec.offsetTop <= pos) current = sec;
+      });
+      links.forEach(function(a){
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current.id);
+      });
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+
+</body>
+</html>

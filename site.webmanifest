@@ -1,0 +1,11 @@
+{
+  "name": "AquaDiscordSRV Installation Guide",
+  "short_name": "AquaDiscordSRV",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#0E9C8F",
+  "background_color": "#FAFAF8",
+  "display": "standalone"
+}
